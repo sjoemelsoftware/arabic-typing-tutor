@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "generate-icons": "npx svgexport public/favicon.svg public/favicon.png 32:32 && npx svgexport public/favicon.svg public/apple-touch-icon.png 180:180"
   },
   "dependencies": {
     "react": "^18.3.1",
