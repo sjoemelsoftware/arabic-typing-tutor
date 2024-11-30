@@ -92,13 +92,13 @@ function App() {
   const [activeTab, setActiveTab] = useState<Tab>("practice");
 
   // Translation helper function
-  const t = (key: string) => {
+  const t = (key: string): string => {
     const keys = key.split(".");
-    let value = translations[settings.language];
+    let value: Record<string, unknown> = translations[settings.language];
     for (const k of keys) {
-      value = value[k];
+      value = value[k] as Record<string, unknown>;
     }
-    return value || key;
+    return (value as unknown as string) || key;
   };
 
   // Reset all progress
@@ -128,11 +128,20 @@ function App() {
       const targetChar = text[oldLength];
 
       if (newChar === targetChar) {
-        setStats((prev) => ({ ...prev, correctChars: prev.correctChars + 1 }));
+        setStats((prev: typeof stats) => ({
+          ...prev,
+          correctChars: prev.correctChars + 1,
+        }));
       } else if (isCloseMatch(newChar, targetChar)) {
-        setStats((prev) => ({ ...prev, closeMatches: prev.closeMatches + 1 }));
+        setStats((prev: typeof stats) => ({
+          ...prev,
+          closeMatches: prev.closeMatches + 1,
+        }));
       } else {
-        setStats((prev) => ({ ...prev, mistakes: prev.mistakes + 1 }));
+        setStats((prev: typeof stats) => ({
+          ...prev,
+          mistakes: prev.mistakes + 1,
+        }));
       }
     }
 
@@ -143,17 +152,17 @@ function App() {
       removedChars.split("").forEach((char, index) => {
         const targetChar = text[newLength + index];
         if (char === targetChar) {
-          setStats((prev) => ({
+          setStats((prev: typeof stats) => ({
             ...prev,
             correctChars: Math.max(0, prev.correctChars - 1),
           }));
         } else if (isCloseMatch(char, targetChar)) {
-          setStats((prev) => ({
+          setStats((prev: typeof stats) => ({
             ...prev,
             closeMatches: Math.max(0, prev.closeMatches - 1),
           }));
         } else {
-          setStats((prev) => ({
+          setStats((prev: typeof stats) => ({
             ...prev,
             mistakes: Math.max(0, prev.mistakes - 1),
           }));
