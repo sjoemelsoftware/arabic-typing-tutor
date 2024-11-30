@@ -12,10 +12,18 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+
       - name: Install dependencies
-        run: |
-          npm install
-          npm run build
+        run: npm install
+
+      - name: Build
+        run: npm run build
+        env:
+          VITE_BASE_URL: "/arabic-typing-tutor"
 
       - name: Deploy to S3 Subfolder
         uses: jakejarvis/s3-sync-action@master
@@ -27,4 +35,4 @@ jobs:
           AWS_REGION: ${{ secrets.AWS_REGION }}
           AWS_S3_BUCKET: ${{ secrets.S3_BUCKET_NAME }}
           SOURCE_DIR: "dist"
-          DEST_DIR: "arabic-typing-tutor" # Replace with the desired subfolder
+          DEST_DIR: "arabic-typing-tutor"
