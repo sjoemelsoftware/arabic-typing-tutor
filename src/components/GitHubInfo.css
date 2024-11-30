@@ -1,0 +1,24 @@
+.github-info {
+    padding: 1rem;
+    margin: 1rem 0;
+    border-radius: 8px;
+    background-color: #f8f9fa;
+}
+
+.github-info a {
+    color: #0366d6;
+    text-decoration: none;
+}
+
+.github-info a:hover {
+    text-decoration: underline;
+}
+
+.github-info h3 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+}
+
+.github-info p {
+    margin: 0.5rem 0;
+}
