@@ -26,6 +26,13 @@ export const translations: Translations = {
     },
     resetStats: "إعادة تعيين الإحصائيات",
     resetConfirm: "هل أنت متأكد أنك تريد إعادة تعيين الإحصائيات؟",
+    github: {
+      title: "التعليقات والمساهمات",
+      sourceCode: "هذا مشروع مفتوح المصدر. يمكنك العثور على الكود المصدري على",
+      bugReport: "وجدت خطأ أو لديك اقتراح؟ الرجاء",
+      openIssue: "فتح تذكرة",
+      onGitHub: "على GitHub"
+    }
   },
   en: {
     title: "Learn Arabic Typing",
@@ -48,6 +55,13 @@ export const translations: Translations = {
     },
     resetStats: "Reset Statistics",
     resetConfirm: "Are you sure you want to reset the statistics?",
+    github: {
+      title: "Feedback & Contributions",
+      sourceCode: "This is an open-source project. You can find the source code on",
+      bugReport: "Found a bug or have a suggestion? Please",
+      openIssue: "open an issue",
+      onGitHub: "on GitHub"
+    }
   },
 };
 

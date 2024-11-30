@@ -1,7 +1,8 @@
 import { useState, useEffect, useRef } from "react";
 import "./App.css";
 import VirtualKeyboard from "./components/VirtualKeyboard";
-import { translations, Language } from "./i18n/translations";
+import { getTranslation } from "./utils/translate";
+import GitHubInfo from "./components/GitHubInfo";
 
 interface Settings {
   showKeyboardHighlight: boolean;
@@ -10,6 +11,8 @@ interface Settings {
   strictMode: boolean;
   language: Language;
 }
+
+type Language = "en" | "ar";
 
 type Tab = "practice" | "settings" | "text";
 
@@ -92,14 +95,7 @@ function App() {
   const [activeTab, setActiveTab] = useState<Tab>("practice");
 
   // Translation helper function
-  const t = (key: string): string => {
-    const keys = key.split(".");
-    let value: Record<string, unknown> = translations[settings.language];
-    for (const k of keys) {
-      value = value[k] as Record<string, unknown>;
-    }
-    return (value as unknown as string) || key;
-  };
+  const t = (key: string) => getTranslation(key, settings.language);
 
   // Reset all progress
   const resetProgress = () => {
@@ -504,6 +500,7 @@ function App() {
                 </select>
               </label>
             </div>
+            <GitHubInfo language={settings.language} />
           </div>
         );
 

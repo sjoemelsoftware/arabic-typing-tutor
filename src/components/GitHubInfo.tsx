@@ -1,11 +1,20 @@
 import React from "react";
+import { getTranslation } from "../utils/translate";
+import type { Language } from "../i18n/translations";
+import "./GitHubInfo.css";
 
-const GitHubInfo: React.FC = () => {
+interface Props {
+  language: Language;
+}
+
+const GitHubInfo: React.FC<Props> = ({ language }) => {
+  const t = (key: string) => getTranslation(`github.${key}`, language);
+
   return (
     <div className="github-info">
-      <h3>Feedback & Contributions</h3>
+      <h3>{t("title")}</h3>
       <p>
-        This is an open-source project. You can find the source code on{" "}
+        {t("sourceCode")}{" "}
         <a
           href="https://github.com/sjoemelsoftware/arabic-typing-tutor"
           target="_blank"
@@ -16,15 +25,15 @@ const GitHubInfo: React.FC = () => {
         .
       </p>
       <p>
-        Found a bug or have a suggestion? Please{" "}
+        {t("bugReport")}{" "}
         <a
           href="https://github.com/sjoemelsoftware/arabic-typing-tutor/issues"
           target="_blank"
           rel="noopener noreferrer"
         >
-          open an issue
+          {t("openIssue")}
         </a>{" "}
-        on GitHub.
+        {t("onGitHub")}.
       </p>
     </div>
   );
