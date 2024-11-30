@@ -1,0 +1,95 @@
+.virtual-keyboard {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-top: 2rem;
+    background-color: var(--bg-secondary);
+    padding: 1rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+.keyboard-row {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.key {
+    width: 50px;
+    height: 50px;
+    border: 1px solid var(--bg-tertiary);
+    background-color: var(--bg-tertiary);
+    border-radius: 5px;
+    display: flex;
+    position: relative;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    user-select: none;
+    transition: all 0.2s ease;
+    color: var(--text-primary);
+}
+
+.key:hover {
+    background-color: var(--bg-secondary);
+}
+
+.qwerty-char {
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    font-size: 0.7rem;
+    color: var(--text-secondary);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.arabic-char {
+    font-size: 1.5rem;
+    transition: all 0.2s ease;
+}
+
+.key.highlight {
+    background-color: var(--accent-blue);
+    color: var(--text-primary);
+    border-color: var(--accent-blue);
+}
+
+.key.shift-key {
+    width: 100px;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.key.space-bar {
+    width: 350px;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.key-label {
+    font-size: 0.9rem;
+    font-family: system-ui, -apple-system, sans-serif;
+}
+
+/* Make the keyboard layout more responsive */
+@media (max-width: 768px) {
+    .key {
+        width: 40px;
+        height: 40px;
+    }
+
+    .key.shift-key {
+        width: 80px;
+    }
+
+    .key.space-bar {
+        width: 240px;
+    }
+
+    .arabic-char {
+        font-size: 1.2rem;
+    }
+}
