@@ -3,6 +3,10 @@ import "./App.css";
 import VirtualKeyboard from "./components/VirtualKeyboard";
 import { getTranslation } from "./utils/translate";
 import GitHubInfo from "./components/GitHubInfo";
+import StatisticsKeyboard from "./components/StatisticsKeyboard";
+import { LetterStatistics } from "./types/statistics";
+import { keyboardLayouts } from "./data/keyboardLayouts";
+import { KeyMapper } from "./utils/keyMapper";
 
 interface Settings {
   showKeyboardHighlight: boolean;
@@ -10,11 +14,12 @@ interface Settings {
   checkHarakat: boolean;
   strictMode: boolean;
   language: Language;
+  keyboardLayout: string;
 }
 
 type Language = "en" | "ar";
 
-type Tab = "practice" | "settings" | "text";
+type Tab = "practice" | "settings" | "text" | "statistics";
 
 function App() {
   // Load settings from localStorage or use defaults
@@ -28,6 +33,7 @@ function App() {
           checkHarakat: false,
           strictMode: false,
           language: "en",
+          keyboardLayout: "osx-arabic",
         };
   });
 
@@ -64,6 +70,12 @@ function App() {
         };
   });
 
+  // Add new state for letter statistics
+  const [letterStats, setLetterStats] = useState<LetterStatistics>(() => {
+    const savedStats = localStorage.getItem("letterStats");
+    return savedStats ? JSON.parse(savedStats) : {};
+  });
+
   // Save settings whenever they change
   useEffect(() => {
     localStorage.setItem("settings", JSON.stringify(settings));
@@ -83,6 +95,11 @@ function App() {
   useEffect(() => {
     localStorage.setItem("stats", JSON.stringify(stats));
   }, [stats]);
+
+  // Add save effect for letter statistics
+  useEffect(() => {
+    localStorage.setItem("letterStats", JSON.stringify(letterStats));
+  }, [letterStats]);
 
   // Scroll to current line
   useEffect(() => {
@@ -113,52 +130,92 @@ function App() {
     resetProgress(); // Reset progress when text changes
   };
 
+  // Add state for key mapper
+  const [keyMapper] = useState(() => new KeyMapper(settings.keyboardLayout));
+
+  // Update handleInput
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newInput = e.target.value;
     const oldLength = userInput.length;
     const newLength = newInput.length;
 
     if (newLength > oldLength) {
-      // User typed a new character
+      // Get the new character
       const newChar = newInput[newLength - 1];
       const targetChar = text[oldLength];
 
-      if (newChar === targetChar) {
-        setStats((prev: typeof stats) => ({
+      // Try to map QWERTY input to Arabic if it's a Latin character or special character
+      const isQwertyChar = /[a-zA-Z0-9`\-=[\];',./\\]/.test(newChar);
+      const mappedChar = isQwertyChar
+        ? keyMapper.mapKey(
+            newChar,
+            /[A-Z]/.test(newChar) ||
+              (e.nativeEvent instanceof InputEvent &&
+                (e.nativeEvent as unknown as KeyboardEvent).getModifierState?.(
+                  "Shift"
+                ))
+          )
+        : newChar;
+
+      // Use the mapped character or original character
+      const effectiveChar = mappedChar || newChar;
+
+      // Update both general stats and letter stats
+      if (effectiveChar === targetChar) {
+        setStats((prev: { correctChars: number }) => ({
           ...prev,
           correctChars: prev.correctChars + 1,
         }));
-      } else if (isCloseMatch(newChar, targetChar)) {
-        setStats((prev: typeof stats) => ({
+      } else if (isCloseMatch(effectiveChar, targetChar)) {
+        setStats((prev: { closeMatches: number }) => ({
           ...prev,
           closeMatches: prev.closeMatches + 1,
         }));
       } else {
-        setStats((prev: typeof stats) => ({
+        setStats((prev: { mistakes: number }) => ({
           ...prev,
           mistakes: prev.mistakes + 1,
         }));
       }
+
+      // Update letter statistics
+      setLetterStats((prev) => {
+        const stats = prev[targetChar] || { attempts: 0, successes: 0 };
+        return {
+          ...prev,
+          [targetChar]: {
+            attempts: stats.attempts + 1,
+            successes: stats.successes + (effectiveChar === targetChar ? 1 : 0),
+          },
+        };
+      });
+
+      // Update input with mapped character if available
+      if (mappedChar && isQwertyChar) {
+        e.preventDefault();
+        setUserInput(userInput + mappedChar);
+        return;
+      }
     }
 
-    // Reset stats for the removed characters
+    // Handle character deletion
     if (newLength < oldLength) {
       const removedChars = userInput.slice(newLength, oldLength);
 
       removedChars.split("").forEach((char, index) => {
         const targetChar = text[newLength + index];
         if (char === targetChar) {
-          setStats((prev: typeof stats) => ({
+          setStats((prev: { correctChars: number }) => ({
             ...prev,
             correctChars: Math.max(0, prev.correctChars - 1),
           }));
         } else if (isCloseMatch(char, targetChar)) {
-          setStats((prev: typeof stats) => ({
+          setStats((prev: { closeMatches: number }) => ({
             ...prev,
             closeMatches: Math.max(0, prev.closeMatches - 1),
           }));
         } else {
-          setStats((prev: typeof stats) => ({
+          setStats((prev: { mistakes: number }) => ({
             ...prev,
             mistakes: Math.max(0, prev.mistakes - 1),
           }));
@@ -166,14 +223,13 @@ function App() {
       });
     }
 
+    // Handle strict mode
     if (settings.strictMode) {
-      // In strict mode, only accept correct input
       const nextChar = text[userInput.length];
       if (
         newInput.length > userInput.length &&
         newInput[newInput.length - 1] !== nextChar
       ) {
-        // Flash warning and don't update input
         const input = e.target;
         input.classList.add("flash-warning");
         setTimeout(() => input.classList.remove("flash-warning"), 500);
@@ -354,11 +410,23 @@ function App() {
     return () => window.removeEventListener("resize", checkScreenSize);
   }, []);
 
-  const handleResetStats = () => {
-    if (window.confirm(t("resetConfirm"))) {
-      resetProgress();
+  const handleResetAllStats = () => {
+    if (window.confirm(t("resetStatsConfirm"))) {
+      // Reset both general stats and letter stats
+      setStats({
+        correctChars: 0,
+        closeMatches: 0,
+        mistakes: 0,
+      });
+      setLetterStats({});
+      setUserInput("");
     }
   };
+
+  // Update when keyboard layout changes
+  useEffect(() => {
+    keyMapper.initializeMapping(settings.keyboardLayout);
+  }, [settings.keyboardLayout]);
 
   const renderTabContent = () => {
     switch (activeTab) {
@@ -441,6 +509,7 @@ function App() {
                 <VirtualKeyboard
                   nextLetter={current}
                   showHighlight={settings.showKeyboardHighlight}
+                  keyboardLayout={settings.keyboardLayout}
                 />
               </div>
             )}
@@ -499,6 +568,24 @@ function App() {
                   <option value="en">English</option>
                 </select>
               </label>
+              <label className="keyboard-layout-select">
+                <span>{t("settings.keyboardLayout")}</span>
+                <select
+                  value={settings.keyboardLayout}
+                  onChange={(e) =>
+                    setSettings((prev) => ({
+                      ...prev,
+                      keyboardLayout: e.target.value,
+                    }))
+                  }
+                >
+                  {keyboardLayouts.map((layout) => (
+                    <option key={layout.id} value={layout.id}>
+                      {settings.language === "ar" ? layout.nameAr : layout.name}
+                    </option>
+                  ))}
+                </select>
+              </label>
             </div>
             <GitHubInfo language={settings.language} />
           </div>
@@ -518,6 +605,15 @@ function App() {
             </div>
           </div>
         );
+
+      case "statistics":
+        return (
+          <StatisticsKeyboard
+            statistics={letterStats}
+            language={settings.language}
+            onReset={handleResetAllStats}
+          />
+        );
     }
   };
 
@@ -527,19 +623,19 @@ function App() {
         <h1>{t("title")}</h1>
         <div className="stats-container">
           <div className="stats">
-            <span className="stat correct" title={t("stats.correct")}>
+            <span className="stat correct" title={t("stats.correctHint")}>
               ✓ {stats.correctChars}
             </span>
-            <span className="stat close" title={t("stats.close")}>
+            <span className="stat close" title={t("stats.closeHint")}>
               ~ {stats.closeMatches}
             </span>
-            <span className="stat wrong" title={t("stats.wrong")}>
+            <span className="stat wrong" title={t("stats.wrongHint")}>
               ✗ {stats.mistakes}
             </span>
           </div>
           <button
             className="reset-button"
-            onClick={handleResetStats}
+            onClick={handleResetAllStats}
             title={t("resetStats")}
           >
             ↺
@@ -563,6 +659,12 @@ function App() {
             onClick={() => setActiveTab("text")}
           >
             {t("textTab")}
+          </button>
+          <button
+            className={`tab ${activeTab === "statistics" ? "active" : ""}`}
+            onClick={() => setActiveTab("statistics")}
+          >
+            {t("statisticsTab")}
           </button>
         </div>
       </div>

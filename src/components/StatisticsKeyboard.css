@@ -1,0 +1,88 @@
+.statistics-keyboard {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 20px;
+    background: var(--keyboard-bg);
+    border-radius: 8px;
+    width: fit-content;
+    margin: 20px auto;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.keyboard-row {
+    display: flex;
+    gap: 4px;
+    justify-content: center;
+}
+
+.key {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    font-size: 18px;
+    cursor: help;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.key:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Dark mode styles */
+@media (prefers-color-scheme: dark) {
+    .statistics-keyboard {
+        background: var(--dark-keyboard-bg);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    }
+
+    .key {
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .key[style*="rgb(240, 240, 240)"] {
+        background-color: #2a2a2a !important;
+        color: #888;
+    }
+}
+
+.statistics-panel {
+    text-align: center;
+    padding: 20px;
+}
+
+.statistics-panel h2 {
+    margin-bottom: 20px;
+}
+
+.statistics-reset-button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    background-color: var(--danger-color);
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.statistics-reset-button:hover {
+    background-color: var(--danger-hover-color);
+    transform: translateY(-1px);
+}
+
+@media (prefers-color-scheme: dark) {
+    .statistics-reset-button {
+        background-color: var(--dark-danger-color);
+    }
+
+    .statistics-reset-button:hover {
+        background-color: var(--dark-danger-hover-color);
+    }
+}

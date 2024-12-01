@@ -63,15 +63,18 @@
     color: var(--text-secondary);
 }
 
-.key.space-bar {
+.key.space-key {
     width: 350px;
     font-size: 0.9rem;
-    color: var(--text-secondary);
 }
 
 .key-label {
     font-size: 0.9rem;
     font-family: system-ui, -apple-system, sans-serif;
+}
+
+.keyboard-row:last-child {
+    margin-top: 4px;
 }
 
 /* Make the keyboard layout more responsive */
@@ -85,11 +88,148 @@
         width: 80px;
     }
 
-    .key.space-bar {
+    .key.space-key {
         width: 240px;
     }
 
     .arabic-char {
         font-size: 1.2rem;
     }
+}
+
+.statistics-content {
+    text-align: center;
+    padding: 1rem;
+}
+
+.statistics-content h2 {
+    margin-bottom: 1.5rem;
+    color: var(--text-primary);
+}
+
+/* Update the key styles for statistics view */
+.statistics-content .key:hover {
+    transform: scale(1.1);
+    z-index: 1;
+}
+
+.key-label {
+    font-size: 0.9rem;
+    font-family: system-ui, -apple-system, sans-serif;
+}
+
+/* Ensure dark mode compatibility */
+@media (prefers-color-scheme: dark) {
+    .statistics-content .key[style*="rgb(240, 240, 240)"] {
+        background-color: var(--bg-tertiary) !important;
+        color: var(--text-secondary);
+    }
+}
+
+.key.has-stats {
+    overflow: visible;
+}
+
+.stats-indicator {
+    position: absolute;
+    bottom: -20px;
+    font-size: 0.7rem;
+    color: var(--text-secondary);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.key:hover .stats-indicator {
+    opacity: 1;
+}
+
+/* Only show tooltips in statistics view */
+.practice-keyboard .key:hover::after {
+    display: none;
+}
+
+.statistics-content .key:hover::after {
+    content: attr(title);
+    position: absolute;
+    bottom: 120%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--bg-primary);
+    padding: 0.5rem;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    white-space: pre;
+    z-index: 10;
+    box-shadow: var(--shadow-md);
+    min-width: 120px;
+    pointer-events: none;
+}
+
+/* Add a small arrow to the tooltip */
+.statistics-content .key:hover::before {
+    content: '';
+    position: absolute;
+    bottom: 110%;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 5px;
+    border-style: solid;
+    border-color: var(--bg-primary) transparent transparent transparent;
+    z-index: 11;
+}
+
+.statistics-content h3 {
+    color: var(--text-secondary);
+    margin: 1rem 0;
+    font-size: 1rem;
+}
+
+/* Statistics reset button styling */
+.statistics-content .reset-button {
+    margin-top: 2rem;
+    padding: 0.75rem 1.5rem;
+    background-color: var(--bg-tertiary);
+    border: none;
+    border-radius: 0.5rem;
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-width: 120px;
+}
+
+.statistics-content .reset-button::before {
+    content: "↺";
+    font-size: 1.2rem;
+}
+
+.statistics-content .reset-button:hover {
+    background-color: var(--accent-red);
+    color: var(--text-primary);
+    transform: translateY(-1px);
+}
+
+/* Dark mode adjustments */
+@media (prefers-color-scheme: dark) {
+    .statistics-content .reset-button {
+        background-color: var(--bg-tertiary);
+        color: var(--text-secondary);
+    }
+
+    .statistics-content .reset-button:hover {
+        background-color: var(--accent-red);
+        color: var(--text-primary);
+    }
+}
+
+/* Add these CSS variables if they're not already defined in your root */
+:root {
+    --bg-tertiary: #2a2a2a;
+    --text-secondary: #94a3b8;
+    --text-primary: #f1f5f9;
+    --accent-red: #ef4444;
 }
