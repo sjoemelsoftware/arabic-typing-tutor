@@ -36,3 +36,12 @@ jobs:
           AWS_S3_BUCKET: ${{ secrets.S3_BUCKET_NAME }}
           SOURCE_DIR: "dist"
           DEST_DIR: "arabic-typing-tutor"
+
+      - name: Invalidate CloudFront Cache
+        uses: chetan/invalidate-cloudfront-action@v2
+        env:
+          DISTRIBUTION: ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }}
+          PATHS: "/arabic-typing-tutor/*"
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
