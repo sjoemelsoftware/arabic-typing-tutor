@@ -160,8 +160,14 @@ body {
 
 .settings-grid label {
   display: flex;
-  flex-direction: column;
+  flex-direction: center;
+  gap: 10px;
+  flex-wrap: wrap;
   align-items: flex-start;
+  padding: 1rem 1.25rem;
+  background-color: var(--bg-primary);
+  border-radius: 0.5rem;
+  transition: all 0.2s;
 }
 
 .settings-grid label>span {
