@@ -402,13 +402,15 @@ function App() {
 
   useEffect(() => {
     const checkScreenSize = () => {
-      setShouldShowKeyboard(window.innerWidth >= 768); // Hide on screens smaller than 768px
+      // Only show keyboard on desktop and if enabled in settings
+      const isMobile = window.innerWidth < 768;
+      setShouldShowKeyboard(!isMobile && settings.showKeyboard);
     };
 
     checkScreenSize();
     window.addEventListener("resize", checkScreenSize);
     return () => window.removeEventListener("resize", checkScreenSize);
-  }, []);
+  }, [settings.showKeyboard]);
 
   const handleResetAllStats = () => {
     if (window.confirm(t("resetStatsConfirm"))) {
@@ -521,13 +523,21 @@ function App() {
           <div className="settings-panel">
             <h2>{t("settingsTab")}</h2>
             <div className="settings-grid">
-              <label>
+              <label
+                className={window.innerWidth < 768 ? "disabled-setting" : ""}
+              >
                 <input
                   type="checkbox"
                   checked={settings.showKeyboard}
                   onChange={() => toggleSetting("showKeyboard")}
+                  disabled={window.innerWidth < 768}
                 />
                 <span>{t("settings.showKeyboard")}</span>
+                {window.innerWidth < 768 && (
+                  <small className="setting-note">
+                    {t("settings.keyboardMobileNote")}
+                  </small>
+                )}
               </label>
               <label>
                 <input

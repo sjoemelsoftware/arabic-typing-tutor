@@ -19,6 +19,7 @@ export const translations: Translations = {
       strictMode: "الوضع الصارم",
       language: "اللغة",
       keyboardLayout: "نوع لوحة المفاتيح",
+      keyboardMobileNote: "لوحة المفاتيح الافتراضية غير متوفرة على الأجهزة المحمولة"
     },
     stats: {
       correct: "صحيح",
@@ -61,6 +62,7 @@ export const translations: Translations = {
       strictMode: "Strict Mode",
       language: "Language",
       keyboardLayout: "Keyboard Layout",
+      keyboardMobileNote: "Virtual keyboard is not available on mobile devices"
     },
     stats: {
       correct: "Correct",
