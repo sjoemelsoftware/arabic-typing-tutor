@@ -57,7 +57,7 @@ export const translations: Translations = {
     settings: {
       showKeyboard: "Show Keyboard",
       showHighlight: "Highlight Keys",
-      checkHarakat: "Check Diacritics",
+      checkHarakat: "Check Diacritics (Harakat)",
       strictMode: "Strict Mode",
       language: "Language",
       keyboardLayout: "Keyboard Layout",

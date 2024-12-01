@@ -17,7 +17,7 @@ A modern, web-based typing tutor specifically designed for learning and practici
 ## Key Learning Features
 
 - **Flexible Matching**: Intelligently matches similar Arabic letters (like أ, إ, آ) when strict mode is disabled
-- **Harakat Support**: Optional checking for Arabic diacritical marks
+- **Harakat Support**: Optional checking for Arabic diacritical marks (Harakat)
 - **Visual Feedback**: Color-coded feedback for correct, close, and incorrect characters
 - **Progress Tracking**: Statistics for correct characters, close matches, and mistakes
 - **Keyboard Guidance**: Optional virtual keyboard showing the location of the next character
@@ -34,7 +34,7 @@ A modern, web-based typing tutor specifically designed for learning and practici
 
 - **Show Keyboard**: Toggle the virtual keyboard display
 - **Show Highlights**: Toggle next-key highlighting on the virtual keyboard
-- **Check Harakat**: Toggle strict checking of diacritical marks
+- **Check Harakat**: Toggle strict checking of diacritical marks (Harakat)
 - **Strict Mode**: Toggle exact character matching
 - **Language**: Switch between Arabic and English interface
 - **Keyboard Layout**: Choose between OS X Arabic and Standard Arabic layouts
