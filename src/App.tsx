@@ -277,23 +277,23 @@ function App() {
   };
 
   const getWordParts = () => {
-    // Split text into lines and find current line
-    const lines = text.split("\n");
+    // Split text into lines, trim each line when processing for display/typing
+    const processedLines = text.split("\n").map((line) => line.trim());
     let currentPos = 0;
     let currentLineIndex = 0;
     let posInLine = 0;
 
-    // Find current line and position
-    for (let i = 0; i < lines.length; i++) {
-      if (currentPos + lines[i].length >= userInput.length) {
+    // Find current line and position using processed lines
+    for (let i = 0; i < processedLines.length; i++) {
+      if (currentPos + processedLines[i].length >= userInput.length) {
         currentLineIndex = i;
         posInLine = userInput.length - currentPos;
         break;
       }
-      currentPos += lines[i].length + 1; // +1 for newline
+      currentPos += processedLines[i].length + 1; // +1 for newline
     }
 
-    const currentLine = lines[currentLineIndex];
+    const currentLine = processedLines[currentLineIndex];
 
     // Function to validate characters for a line
     const validateLine = (line: string, startPos: number) => {
@@ -335,18 +335,18 @@ function App() {
     const remaining = currentLine.slice(posInLine + 1);
 
     // Create validated arrays for previous lines
-    const previousLines = lines
+    const previousLines = processedLines
       .slice(0, currentLineIndex)
       .map((line, lineIndex) => {
         let startPos = 0;
         for (let i = 0; i < lineIndex; i++) {
-          startPos += lines[i].length + 1;
+          startPos += processedLines[i].length + 1;
         }
         return validateLine(line, startPos);
       });
 
     return {
-      lines,
+      lines: processedLines,
       currentLineIndex,
       typedArray,
       current,
