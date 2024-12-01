@@ -230,12 +230,14 @@ body {
   color: var(--text-secondary);
 }
 
-/* Language select */
-.language-select {
+/* Language and keyboard layout select styling */
+.language-select,
+.keyboard-layout-select {
   justify-content: space-between !important;
 }
 
-.language-select select {
+.language-select select,
+.keyboard-layout-select select {
   background-color: var(--bg-tertiary);
   color: var(--text-primary);
   border: 1px solid transparent;
@@ -245,7 +247,8 @@ body {
   font-size: 0.875rem;
 }
 
-.language-select select:focus {
+.language-select select:focus,
+.keyboard-layout-select select:focus {
   border-color: var(--accent-blue);
   outline: none;
 }

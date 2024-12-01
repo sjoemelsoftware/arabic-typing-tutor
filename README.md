@@ -12,6 +12,7 @@ A modern, web-based typing tutor specifically designed for learning and practici
 - 🌙 Dark mode design
 - 🌐 Bilingual interface (Arabic/English)
 - 📱 Responsive design for all devices
+- 📊 Detailed typing statistics and analytics
 
 ## Key Learning Features
 
@@ -21,6 +22,14 @@ A modern, web-based typing tutor specifically designed for learning and practici
 - **Progress Tracking**: Statistics for correct characters, close matches, and mistakes
 - **Keyboard Guidance**: Optional virtual keyboard showing the location of the next character
 
+## Statistics & Analytics
+
+- **Heat Map Visualization**: Color-coded keyboard showing typing accuracy for each key
+- **Detailed Metrics**: Track success rate and total attempts for each character
+- **Shift Key Analysis**: Separate statistics for regular and shift-modified characters
+- **Real-time Updates**: Statistics update instantly as you type
+- **Performance Tracking**: Monitor your progress with accuracy percentages and attempt counts
+
 ## Settings
 
 - **Show Keyboard**: Toggle the virtual keyboard display
@@ -28,6 +37,7 @@ A modern, web-based typing tutor specifically designed for learning and practici
 - **Check Harakat**: Toggle strict checking of diacritical marks
 - **Strict Mode**: Toggle exact character matching
 - **Language**: Switch between Arabic and English interface
+- **Keyboard Layout**: Choose between OS X Arabic and Standard Arabic layouts
 
 ## Technical Details
 
