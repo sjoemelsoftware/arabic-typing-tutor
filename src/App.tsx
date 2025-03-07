@@ -7,7 +7,7 @@ import StatisticsKeyboard from "./components/StatisticsKeyboard";
 import { LetterStatistics } from "./types/statistics";
 import { keyboardLayouts } from "./data/keyboardLayouts";
 import { KeyMapper } from "./utils/keyMapper";
-
+import { toast } from "react-toastify";
 interface Settings {
   showKeyboardHighlight: boolean;
   showKeyboard: boolean;
@@ -15,6 +15,7 @@ interface Settings {
   strictMode: boolean;
   language: Language;
   keyboardLayout: string;
+  useQwertyMapping: boolean;
 }
 
 type Language = "en" | "ar";
@@ -34,6 +35,7 @@ function App() {
           strictMode: false,
           language: "en",
           keyboardLayout: "osx-arabic",
+          useQwertyMapping: false,
         };
   });
 
@@ -133,6 +135,35 @@ function App() {
   // Add state for key mapper
   const [keyMapper] = useState(() => new KeyMapper(settings.keyboardLayout));
 
+  const shouldUseQwertyMapping = (newChar: string) => {
+    // Show notification and enable QWERTY mapping when Latin character is typed
+    if (/[A-Za-z]/.test(newChar) && !settings.useQwertyMapping) {
+      toast.info(t("settings.qwertyMappingEnabledNote"));
+      setSettings((prev) => ({
+        ...prev,
+        useQwertyMapping: true,
+      }));
+
+      return true;
+    }
+
+    // Show notification and disable QWERTY mapping when Arabic character is typed
+    if (
+      /[\u0600-\u06FF]/.test(newChar) && // Arabic Unicode range
+      settings.useQwertyMapping
+    ) {
+      toast.info(t("settings.qwertyMappingDisabledNote"));
+      setSettings((prev) => ({
+        ...prev,
+        useQwertyMapping: false,
+      }));
+
+      return false;
+    }
+
+    return settings.useQwertyMapping;
+  };
+
   // Update handleInput
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newInput = e.target.value;
@@ -144,21 +175,26 @@ function App() {
       const newChar = newInput[newLength - 1];
       const targetChar = text[oldLength];
 
-      // Try to map QWERTY input to Arabic if it's a Latin character or special character
-      const isQwertyChar = /[a-zA-Z0-9`\-=[\];',./\\]/.test(newChar);
-      const mappedChar = isQwertyChar
-        ? keyMapper.mapKey(
-            newChar,
-            /[A-Z]/.test(newChar) ||
-              (e.nativeEvent instanceof InputEvent &&
-                (e.nativeEvent as unknown as KeyboardEvent).getModifierState?.(
-                  "Shift"
-                ))
-          )
-        : newChar;
+      let effectiveChar = newChar;
+      let mappedChar = null;
 
-      // Use the mapped character or original character
-      const effectiveChar = mappedChar || newChar;
+      // Check if we should toggle QWERTY mapping
+      const useQwertyMapping = shouldUseQwertyMapping(newChar);
+
+      if (useQwertyMapping) {
+        // map QWERTY input to Arabic if it's a Latin character or special character
+        const qwertyShiftKeys = Array.from(
+          keyMapper.qwertyShiftToArabic.keys()
+        );
+        const isShiftPressed = qwertyShiftKeys.includes(newChar);
+
+        mappedChar = useQwertyMapping
+          ? keyMapper.mapKey(newChar, isShiftPressed)
+          : newChar;
+
+        // Use the mapped character or original character
+        effectiveChar = mappedChar || newChar;
+      }
 
       // Update both general stats and letter stats
       if (effectiveChar === targetChar) {
@@ -191,7 +227,7 @@ function App() {
       });
 
       // Update input with mapped character if available
-      if (mappedChar && isQwertyChar) {
+      if (mappedChar && useQwertyMapping) {
         e.preventDefault();
         setUserInput(userInput + mappedChar);
         return;
@@ -595,6 +631,14 @@ function App() {
                     </option>
                   ))}
                 </select>
+              </label>
+              <label>
+                <input
+                  type="checkbox"
+                  checked={settings.useQwertyMapping}
+                  onChange={() => toggleSetting("useQwertyMapping")}
+                />
+                <span>{t("settings.useQwertyMapping")}</span>
               </label>
             </div>
             <GitHubInfo language={settings.language} />

@@ -19,7 +19,10 @@ export const translations: Translations = {
       strictMode: "الوضع الصارم",
       language: "اللغة",
       keyboardLayout: "نوع لوحة المفاتيح",
-      keyboardMobileNote: "لوحة المفاتيح الافتراضية غير متوفرة على الأجهزة المحمولة"
+      keyboardMobileNote: "لوحة المفاتيح الافتراضية غير متوفرة على الأجهزة المحمولة",
+      useQwertyMapping: "قم بتعيين إدخال لوحة مفاتيح QWERTY إلى اللغة العربية، في حال لم يكن تخطيط لوحة المفاتيح باللغة العربية.",
+      qwertyMappingEnabledNote: "تم اكتشاف لوحة مفاتيح عربية - تم تعطيل تحويل QWERTY",
+      qwertyMappingDisabledNote: "تم اكتشاف لوحة مفاتيح عربية - تم تعطيل تحويل QWERTY",
     },
     stats: {
       correct: "صحيح",
@@ -62,7 +65,10 @@ export const translations: Translations = {
       strictMode: "Strict Mode",
       language: "Language",
       keyboardLayout: "Keyboard Layout",
-      keyboardMobileNote: "Virtual keyboard is not available on mobile devices"
+      keyboardMobileNote: "Virtual keyboard is not available on mobile devices",
+      useQwertyMapping: "Map QWERTY keyboard input to Arabic, in case the keyboard layout is not Arabic.",
+      qwertyMappingEnabledNote: "Detected English keyboard input - QWERTY to Arabic mapping enabled",
+      qwertyMappingDisabledNote: "Detected Arabic keyboard input - QWERTY mapping disabled",
     },
     stats: {
       correct: "Correct",

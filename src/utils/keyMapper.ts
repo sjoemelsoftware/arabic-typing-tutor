@@ -1,8 +1,8 @@
 import { getLayoutById } from "../data/keyboardLayouts";
 
 export class KeyMapper {
-  private qwertyToArabic: Map<string, string>;
-  private qwertyShiftToArabic: Map<string, string>;
+  public qwertyToArabic: Map<string, string>;
+  public qwertyShiftToArabic: Map<string, string>;
 
   constructor(layoutId: string) {
     this.qwertyToArabic = new Map();
@@ -16,15 +16,11 @@ export class KeyMapper {
     for (const row of layout.rows) {
       for (const key of row) {
         // Map regular keys
-        this.qwertyToArabic.set(key.qwerty.toLowerCase(), key.arabic);
+        this.qwertyToArabic.set(key.qwerty, key.arabic);
         
         // Map shifted keys - use qwertyShift as the key
         if (key.arabicShift && key.qwertyShift) {
-          this.qwertyShiftToArabic.set(key.qwertyShift.toLowerCase(), key.arabicShift);
-        }
-        // Also map shifted number keys and special characters
-        if (key.arabicShift && key.qwerty.match(/[0-9`\-=[\];',./\\]/)) {
-          this.qwertyShiftToArabic.set(key.qwerty, key.arabicShift);
+          this.qwertyShiftToArabic.set(key.qwertyShift, key.arabicShift);
         }
       }
     }
@@ -34,8 +30,9 @@ export class KeyMapper {
     const lowercaseKey = key.toLowerCase();
 
     if (isShift) {
+      
       // First try to find a direct shift mapping
-      const shiftMapping = this.qwertyShiftToArabic.get(lowercaseKey);
+      const shiftMapping = this.qwertyShiftToArabic.get(key);
       if (shiftMapping) return shiftMapping;
 
       // Then try to find a mapping for the original character
