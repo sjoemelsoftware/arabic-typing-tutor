@@ -141,8 +141,8 @@ export const StandardArabicLayout: KeyboardLayout = {
 
 export const Arabic102Layout: KeyboardLayout = {
   id: "arabic-102",
-  name: "Arabic 102",
-  nameAr: "العربية 102",
+  name: "Arabic 102 (ISO105)",
+  nameAr: "العربية 102 (ISO105)",
   rows: [
     [
       { arabic: ">", qwerty: "`", arabicShift: "<", qwertyShift: "~" },
