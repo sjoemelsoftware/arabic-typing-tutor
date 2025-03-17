@@ -203,9 +203,76 @@ export const Arabic102Layout: KeyboardLayout = {
 };
 
 
+
+export const Arabic101Layout: KeyboardLayout = {
+  id: "arabic-101",
+  name: "Arabic 101 (ISO105)",
+  nameAr: "العربية 101 (ISO105)",
+  rows: [
+    [
+      { arabic: "ذ", qwerty: "`", arabicShift: "ّ", qwertyShift: "~" },
+      { arabic: "١", qwerty: "1", arabicShift: "!", qwertyShift: "!" },
+      { arabic: "٢", qwerty: "2", arabicShift: "@", qwertyShift: "@" },
+      { arabic: "٣", qwerty: "3", arabicShift: "#", qwertyShift: "#" },
+      { arabic: "٤", qwerty: "4", arabicShift: "$", qwertyShift: "$" },
+      { arabic: "٥", qwerty: "5", arabicShift: "%", qwertyShift: "%" },
+      { arabic: "٦", qwerty: "6", arabicShift: "^", qwertyShift: "^" },
+      { arabic: "٧", qwerty: "7", arabicShift: "&", qwertyShift: "&" },
+      { arabic: "٨", qwerty: "8", arabicShift: "*", qwertyShift: "*" },
+      { arabic: "٩", qwerty: "9", arabicShift: "(", qwertyShift: "(" },
+      { arabic: "٠", qwerty: "0", arabicShift: ")", qwertyShift: ")" },
+      { arabic: "-", qwerty: "-", arabicShift: "_", qwertyShift: "_" },
+      { arabic: "=", qwerty: "=", arabicShift: "+", qwertyShift: "+" },
+    ],
+    [
+      { arabic: "ض", qwerty: "q", arabicShift: "َ", qwertyShift: "Q" },
+      { arabic: "ص", qwerty: "w", arabicShift: "ً", qwertyShift: "W" },
+      { arabic: "ث", qwerty: "e", arabicShift: "ُ", qwertyShift: "E" },
+      { arabic: "ق", qwerty: "r", arabicShift: "ٌ", qwertyShift: "R" },
+      { arabic: "ف", qwerty: "t", arabicShift: "ﻹ", qwertyShift: "T" },
+      { arabic: "غ", qwerty: "y", arabicShift: "إ", qwertyShift: "Y" },
+      { arabic: "ع", qwerty: "u", arabicShift: "'", qwertyShift: "U" },
+      { arabic: "ه", qwerty: "i", arabicShift: "÷", qwertyShift: "I" },
+      { arabic: "خ", qwerty: "o", arabicShift: "×", qwertyShift: "O" },
+      { arabic: "ح", qwerty: "p", arabicShift: "؛", qwertyShift: "P" },
+      { arabic: "ج", qwerty: "[", arabicShift: "{", qwertyShift: "{" },
+      { arabic: "د", qwerty: "]", arabicShift: "}", qwertyShift: "}" },
+    ],
+    [
+      { arabic: "ش", qwerty: "a", arabicShift: "ِ", qwertyShift: "A" },
+      { arabic: "س", qwerty: "s", arabicShift: "ٍ", qwertyShift: "S" },
+      { arabic: "ي", qwerty: "d", arabicShift: "]", qwertyShift: "D" },
+      { arabic: "ب", qwerty: "f", arabicShift: "[", qwertyShift: "F" },
+      { arabic: "ل", qwerty: "g", arabicShift: "ﻷ", qwertyShift: "G" },
+      { arabic: "ا", qwerty: "h", arabicShift: "أ", qwertyShift: "H" },
+      { arabic: "ت", qwerty: "j", arabicShift: "ـ", qwertyShift: "J" },
+      { arabic: "ن", qwerty: "k", arabicShift: "،", qwertyShift: "K" },
+      { arabic: "م", qwerty: "l", arabicShift: "/", qwertyShift: "L" },
+      { arabic: "ك", qwerty: ";", arabicShift: ":", qwertyShift: ":" },
+      { arabic: "ط", qwerty: "'", arabicShift: "\"", qwertyShift: "\"" },
+      { arabic: "\\", qwerty: "#", arabicShift: "|", qwertyShift: "~" },
+    ],
+    [
+      { arabic: "\\", qwerty: "\\", arabicShift: "|", qwertyShift: "|" },
+      { arabic: "ئ", qwerty: "z", arabicShift: "~", qwertyShift: "Z" },
+      { arabic: "ء", qwerty: "x", arabicShift: "ْ", qwertyShift: "X" },
+      { arabic: "ؤ", qwerty: "c", arabicShift: "}", qwertyShift: "C" },
+      { arabic: "ر", qwerty: "v", arabicShift: "{", qwertyShift: "V" },
+      { arabic: "ﻻ", qwerty: "b", arabicShift: "ﻵ", qwertyShift: "B" },
+      { arabic: "ى", qwerty: "n", arabicShift: "آ", qwertyShift: "N" },
+      { arabic: "ة", qwerty: "m", arabicShift: "'", qwertyShift: "M" },
+      { arabic: "و", qwerty: ",", arabicShift: ",", qwertyShift: "<" },
+      { arabic: "ز", qwerty: ".", arabicShift: ".", qwertyShift: ">" },
+      { arabic: "ظ", qwerty: "/", arabicShift: "؟", qwertyShift: "?" },
+    ],
+  ],
+};
+
+
 export const keyboardLayouts: KeyboardLayout[] = [
   OSXArabicLayout,
   StandardArabicLayout,
+  Arabic101Layout,
   Arabic102Layout,
 ];
 
