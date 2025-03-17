@@ -223,6 +223,7 @@ export const Arabic101Layout: KeyboardLayout = {
       { arabic: "٠", qwerty: "0", arabicShift: ")", qwertyShift: ")" },
       { arabic: "-", qwerty: "-", arabicShift: "_", qwertyShift: "_" },
       { arabic: "=", qwerty: "=", arabicShift: "+", qwertyShift: "+" },
+      { arabic: "", qwerty: "", arabicShift: "", qwertyShift:""}
     ],
     [
       { arabic: "ض", qwerty: "q", arabicShift: "َ", qwertyShift: "Q" },
@@ -237,6 +238,7 @@ export const Arabic101Layout: KeyboardLayout = {
       { arabic: "ح", qwerty: "p", arabicShift: "؛", qwertyShift: "P" },
       { arabic: "ج", qwerty: "[", arabicShift: "{", qwertyShift: "{" },
       { arabic: "د", qwerty: "]", arabicShift: "}", qwertyShift: "}" },
+      { arabic: "", qwerty: "", arabicShift: "", qwertyShift:""}
     ],
     [
       { arabic: "ش", qwerty: "a", arabicShift: "ِ", qwertyShift: "A" },
@@ -264,6 +266,8 @@ export const Arabic101Layout: KeyboardLayout = {
       { arabic: "و", qwerty: ",", arabicShift: ",", qwertyShift: "<" },
       { arabic: "ز", qwerty: ".", arabicShift: ".", qwertyShift: ">" },
       { arabic: "ظ", qwerty: "/", arabicShift: "؟", qwertyShift: "?" },
+      { arabic: "", qwerty: "", arabicShift: "", qwertyShift:""},
+      { arabic: "", qwerty: "", arabicShift: "", qwertyShift:""}
     ],
   ],
 };
