@@ -34,6 +34,11 @@ const GitHubInfo: React.FC<Props> = ({ language }) => {
           {t("openIssue")}
         </a>{" "}
         {t("onGitHub")}.
+        <br />
+        {/* Check other tools on Jidhr.com */}
+        <a href="https://jidhr.com" target="_blank" rel="noopener noreferrer">
+          {t("checkOtherTools")}
+        </a>
       </p>
     </div>
   );

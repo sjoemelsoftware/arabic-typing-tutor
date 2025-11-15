@@ -19,10 +19,14 @@ export const translations: Translations = {
       strictMode: "الوضع الصارم",
       language: "اللغة",
       keyboardLayout: "نوع لوحة المفاتيح",
-      keyboardMobileNote: "لوحة المفاتيح الافتراضية غير متوفرة على الأجهزة المحمولة",
-      useQwertyMapping: "قم بتعيين إدخال لوحة مفاتيح QWERTY إلى اللغة العربية، في حال لم يكن تخطيط لوحة المفاتيح باللغة العربية.",
-      qwertyMappingEnabledNote: "تم اكتشاف لوحة مفاتيح عربية - تم تعطيل تحويل QWERTY",
-      qwertyMappingDisabledNote: "تم اكتشاف لوحة مفاتيح عربية - تم تعطيل تحويل QWERTY",
+      keyboardMobileNote:
+        "لوحة المفاتيح الافتراضية غير متوفرة على الأجهزة المحمولة",
+      useQwertyMapping:
+        "قم بتعيين إدخال لوحة مفاتيح QWERTY إلى اللغة العربية، في حال لم يكن تخطيط لوحة المفاتيح باللغة العربية.",
+      qwertyMappingEnabledNote:
+        "تم اكتشاف لوحة مفاتيح عربية - تم تعطيل تحويل QWERTY",
+      qwertyMappingDisabledNote:
+        "تم اكتشاف لوحة مفاتيح عربية - تم تعطيل تحويل QWERTY",
     },
     stats: {
       correct: "صحيح",
@@ -43,7 +47,8 @@ export const translations: Translations = {
       sourceCode: "هذا مشروع مفتوح المصدر. يمكنك العثور على الكود المصدري على",
       bugReport: "وجدت خطأ أو لديك اقتراح؟ الرجاء",
       openIssue: "فتح تذكرة",
-      onGitHub: "على GitHub"
+      onGitHub: "على GitHub",
+      checkOtherTools: "تحقق من أدوات أخرى على Jidhr.com",
     },
     statisticsTab: "الإحصائيات",
     resetStatsConfirm: "هل أنت متأكد أنك تريد إعادة تعيين إحصائيات الحروف؟",
@@ -66,9 +71,12 @@ export const translations: Translations = {
       language: "Language",
       keyboardLayout: "Keyboard Layout",
       keyboardMobileNote: "Virtual keyboard is not available on mobile devices",
-      useQwertyMapping: "Map QWERTY keyboard input to Arabic, in case the keyboard layout is not Arabic.",
-      qwertyMappingEnabledNote: "Detected English keyboard input - QWERTY to Arabic mapping enabled",
-      qwertyMappingDisabledNote: "Detected Arabic keyboard input - QWERTY mapping disabled",
+      useQwertyMapping:
+        "Map QWERTY keyboard input to Arabic, in case the keyboard layout is not Arabic.",
+      qwertyMappingEnabledNote:
+        "Detected English keyboard input - QWERTY to Arabic mapping enabled",
+      qwertyMappingDisabledNote:
+        "Detected Arabic keyboard input - QWERTY mapping disabled",
     },
     stats: {
       correct: "Correct",
@@ -86,10 +94,12 @@ export const translations: Translations = {
     resetConfirm: "Are you sure you want to reset the statistics?",
     github: {
       title: "Feedback & Contributions",
-      sourceCode: "This is an open-source project. You can find the source code on",
+      sourceCode:
+        "This is an open-source project. You can find the source code on",
       bugReport: "Found a bug or have a suggestion? Please",
       openIssue: "open an issue",
-      onGitHub: "on GitHub"
+      onGitHub: "on GitHub",
+      checkOtherTools: "Check other tools on Jidhr.com",
     },
     statisticsTab: "Statistics",
     resetStatsConfirm: "Are you sure you want to reset the letter statistics?",
@@ -99,4 +109,4 @@ export const translations: Translations = {
   },
 };
 
-export type Language = "ar" | "en"; 
+export type Language = "ar" | "en";
