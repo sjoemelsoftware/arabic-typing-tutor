@@ -445,6 +445,7 @@ body {
 
 .space-char {
   position: relative;
+  overflow-wrap: break-word;
 }
 
 .space-char.typed-wrong {

@@ -55,9 +55,56 @@ function App() {
     );
   });
 
-  const [userInput, setUserInput] = useState(() => {
+  // Track input per line as an array of strings
+  const [userInputLines, setUserInputLines] = useState<string[]>(() => {
     const savedProgress = localStorage.getItem("progress");
-    return savedProgress || "";
+    if (savedProgress) {
+      // Try to parse as array, fallback to old string format
+      try {
+        const parsed = JSON.parse(savedProgress);
+        if (Array.isArray(parsed)) {
+          return parsed;
+        }
+        // Migrate old string format to array format
+        const lines = text.split("\n");
+        const migrated = lines.map((_, index) => {
+          let pos = 0;
+          for (let i = 0; i < index; i++) {
+            pos += lines[i].trim().length + 1;
+          }
+          const endPos = pos + lines[index].trim().length;
+          return savedProgress.slice(
+            pos,
+            Math.min(endPos, savedProgress.length)
+          );
+        });
+        return migrated;
+      } catch {
+        // If parsing fails, migrate old format
+        const lines = text.split("\n");
+        const migrated = lines.map((_, index) => {
+          let pos = 0;
+          for (let i = 0; i < index; i++) {
+            pos += lines[i].trim().length + 1;
+          }
+          const endPos = pos + lines[index].trim().length;
+          return savedProgress.slice(
+            pos,
+            Math.min(endPos, savedProgress.length)
+          );
+        });
+        return migrated;
+      }
+    }
+    // Initialize with empty strings for each line in text
+    const lines = text.split("\n");
+    return lines.map(() => "");
+  });
+
+  // Track which line is currently being typed
+  const [currentLineIndex, setCurrentLineIndex] = useState(() => {
+    const saved = localStorage.getItem("currentLineIndex");
+    return saved ? parseInt(saved, 10) : 0;
   });
 
   // Add state for tracking mistakes
@@ -88,10 +135,39 @@ function App() {
     localStorage.setItem("text", text);
   }, [text]);
 
+  // Sync userInputLines array when text lines change
+  useEffect(() => {
+    const lines = text.split("\n");
+    setUserInputLines((prev) => {
+      const newLines = [...prev];
+      // Ensure array matches number of lines
+      while (newLines.length < lines.length) {
+        newLines.push("");
+      }
+      // Trim if text has fewer lines
+      if (newLines.length > lines.length) {
+        return newLines.slice(0, lines.length);
+      }
+      return newLines;
+    });
+    // Reset current line index if it's out of bounds
+    setCurrentLineIndex((prev) => {
+      if (prev >= lines.length) {
+        return Math.max(0, lines.length - 1);
+      }
+      return prev;
+    });
+  }, [text]);
+
   // Save progress when it changes
   useEffect(() => {
-    localStorage.setItem("progress", userInput);
-  }, [userInput]);
+    localStorage.setItem("progress", JSON.stringify(userInputLines));
+  }, [userInputLines]);
+
+  // Save current line index
+  useEffect(() => {
+    localStorage.setItem("currentLineIndex", currentLineIndex.toString());
+  }, [currentLineIndex]);
 
   // Save stats to localStorage
   useEffect(() => {
@@ -109,27 +185,27 @@ function App() {
     if (currentLine) {
       currentLine.scrollIntoView({ behavior: "smooth", block: "center" });
     }
-  }, [userInput]);
+  }, [currentLineIndex, userInputLines]);
 
   const [activeTab, setActiveTab] = useState<Tab>("practice");
 
   // Translation helper function
   const t = (key: string) => getTranslation(key, settings.language);
 
-  // Reset all progress
-  const resetProgress = () => {
-    setUserInput("");
+  // Function to handle text input from user
+  const handleTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const newText = e.target.value;
+    setText(newText);
+    // Reset progress and initialize line arrays
+    const lines = newText.split("\n");
+    setUserInputLines(lines.map(() => ""));
+    setCurrentLineIndex(0);
     setStats({
       correctChars: 0,
       closeMatches: 0,
       mistakes: 0,
     });
-  };
-
-  // Function to handle text input from user
-  const handleTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setText(e.target.value);
-    resetProgress(); // Reset progress when text changes
+    setLetterStats({});
   };
 
   // Add state for key mapper
@@ -164,16 +240,81 @@ function App() {
     return settings.useQwertyMapping;
   };
 
-  // Update handleInput
+  // Handle keyboard events for line navigation
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    const lines = text.split("\n").map((line) => line.trim());
+    const currentLineInput = userInputLines[currentLineIndex] || "";
+    const currentTargetLine = lines[currentLineIndex] || "";
+    const isLineComplete = currentLineInput.length >= currentTargetLine.length;
+
+    // Handle Enter key - move to next line (always allowed)
+    if (e.key === "Enter") {
+      e.preventDefault();
+      if (currentLineIndex < lines.length - 1) {
+        // Ensure we have an array entry for the next line
+        const newInputLines = [...userInputLines];
+        while (newInputLines.length <= currentLineIndex + 1) {
+          newInputLines.push("");
+        }
+        setUserInputLines(newInputLines);
+        setCurrentLineIndex(currentLineIndex + 1);
+      }
+      return;
+    }
+
+    // Handle Space key - move to next line if current line is complete
+    if (
+      e.key === " " &&
+      isLineComplete &&
+      currentLineIndex < lines.length - 1
+    ) {
+      e.preventDefault();
+      // Ensure we have an array entry for the next line
+      const newInputLines = [...userInputLines];
+      while (newInputLines.length <= currentLineIndex + 1) {
+        newInputLines.push("");
+      }
+      setUserInputLines(newInputLines);
+      setCurrentLineIndex(currentLineIndex + 1);
+      return;
+    }
+
+    // Handle Backspace at start of line - move to previous line
+    if (
+      e.key === "Backspace" &&
+      currentLineInput.length === 0 &&
+      currentLineIndex > 0
+    ) {
+      e.preventDefault();
+      const prevIndex = currentLineIndex - 1;
+      setCurrentLineIndex(prevIndex);
+      // Move cursor to end of previous line
+      setTimeout(() => {
+        if (inputRef.current) {
+          const prevLineInput = userInputLines[prevIndex] || "";
+          inputRef.current.setSelectionRange(
+            prevLineInput.length,
+            prevLineInput.length
+          );
+        }
+      }, 0);
+      return;
+    }
+  };
+
+  // Update handleInput to work per line
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const lines = text.split("\n").map((line) => line.trim());
+    const currentLineInput = userInputLines[currentLineIndex] || "";
+    const currentTargetLine = lines[currentLineIndex] || "";
     const newInput = e.target.value;
-    const oldLength = userInput.length;
+    const oldLength = currentLineInput.length;
     const newLength = newInput.length;
 
     if (newLength > oldLength) {
       // Get the new character
       const newChar = newInput[newLength - 1];
-      const targetChar = text[oldLength];
+      const targetChar = currentTargetLine[oldLength];
 
       let effectiveChar = newChar;
       let mappedChar = null;
@@ -229,17 +370,42 @@ function App() {
       // Update input with mapped character if available
       if (mappedChar && useQwertyMapping) {
         e.preventDefault();
-        setUserInput(userInput + mappedChar);
+        const newInputLines = [...userInputLines];
+        while (newInputLines.length <= currentLineIndex) {
+          newInputLines.push("");
+        }
+        const updatedInput = currentLineInput + mappedChar;
+        newInputLines[currentLineIndex] = updatedInput;
+
+        // Auto-advance to next line when last character is typed
+        const isLastCharacter =
+          updatedInput.length === currentTargetLine.length;
+        const hasNextLine = currentLineIndex < lines.length - 1;
+
+        if (isLastCharacter && hasNextLine) {
+          while (newInputLines.length <= currentLineIndex + 1) {
+            newInputLines.push("");
+          }
+          setUserInputLines(newInputLines);
+          setCurrentLineIndex(currentLineIndex + 1);
+          setTimeout(() => {
+            if (inputRef.current) {
+              inputRef.current.focus();
+            }
+          }, 0);
+        } else {
+          setUserInputLines(newInputLines);
+        }
         return;
       }
     }
 
     // Handle character deletion
     if (newLength < oldLength) {
-      const removedChars = userInput.slice(newLength, oldLength);
+      const removedChars = currentLineInput.slice(newLength, oldLength);
 
       removedChars.split("").forEach((char, index) => {
-        const targetChar = text[newLength + index];
+        const targetChar = currentTargetLine[newLength + index];
         if (char === targetChar) {
           setStats((prev: { correctChars: number }) => ({
             ...prev,
@@ -261,9 +427,9 @@ function App() {
 
     // Handle strict mode
     if (settings.strictMode) {
-      const nextChar = text[userInput.length];
+      const nextChar = currentTargetLine[currentLineInput.length];
       if (
-        newInput.length > userInput.length &&
+        newInput.length > currentLineInput.length &&
         newInput[newInput.length - 1] !== nextChar
       ) {
         const input = e.target;
@@ -273,10 +439,43 @@ function App() {
       }
     }
 
-    setUserInput(newInput);
+    // Update the current line's input
+    const newInputLines = [...userInputLines];
+    while (newInputLines.length <= currentLineIndex) {
+      newInputLines.push("");
+    }
+    newInputLines[currentLineIndex] = newInput;
+
+    // Auto-advance to next line when last character is typed
+    // Check if we just typed the last character of the current line
+    const isLastCharacter =
+      newLength > oldLength && newInput.length === currentTargetLine.length;
+    const hasNextLine = currentLineIndex < lines.length - 1;
+
+    if (isLastCharacter && hasNextLine) {
+      // Ensure we have an array entry for the next line
+      while (newInputLines.length <= currentLineIndex + 1) {
+        newInputLines.push("");
+      }
+      setUserInputLines(newInputLines);
+      setCurrentLineIndex(currentLineIndex + 1);
+      // Focus input after moving to next line
+      setTimeout(() => {
+        if (inputRef.current) {
+          inputRef.current.focus();
+        }
+      }, 0);
+    } else {
+      setUserInputLines(newInputLines);
+    }
   };
 
-  const isCloseMatch = (typed: string, target: string) => {
+  const isCloseMatch = (typed: string | undefined, target: string) => {
+    // Handle undefined typed character (not typed yet)
+    if (typed === undefined || typed === null) {
+      return false;
+    }
+
     if (!settings.checkHarakat && !settings.strictMode) {
       // Basic forms of letters that should match
       const equivalents: { [key: string]: string[] } = {
@@ -315,26 +514,14 @@ function App() {
   const getWordParts = () => {
     // Split text into lines, trim each line when processing for display/typing
     const processedLines = text.split("\n").map((line) => line.trim());
-    let currentPos = 0;
-    let currentLineIndex = 0;
-    let posInLine = 0;
-
-    // Find current line and position using processed lines
-    for (let i = 0; i < processedLines.length; i++) {
-      if (currentPos + processedLines[i].length >= userInput.length) {
-        currentLineIndex = i;
-        posInLine = userInput.length - currentPos;
-        break;
-      }
-      currentPos += processedLines[i].length + 1; // +1 for newline
-    }
-
-    const currentLine = processedLines[currentLineIndex];
+    const currentLine = processedLines[currentLineIndex] || "";
+    const currentLineInput = userInputLines[currentLineIndex] || "";
+    const posInLine = currentLineInput.length;
 
     // Function to validate characters for a line
-    const validateLine = (line: string, startPos: number) => {
+    const validateLine = (line: string, lineInput: string) => {
       return line.split("").map((targetChar, index) => {
-        const typedChar = userInput[startPos + index];
+        const typedChar = lineInput[index];
         const exactMatch = typedChar === targetChar;
         const closeMatch = !exactMatch && isCloseMatch(typedChar, targetChar);
         const isSpace = targetChar === " ";
@@ -353,7 +540,7 @@ function App() {
       .slice(0, posInLine)
       .split("")
       .map((targetChar, index) => {
-        const typedChar = userInput[currentPos + index];
+        const typedChar = currentLineInput[index];
         const exactMatch = typedChar === targetChar;
         const closeMatch = !exactMatch && isCloseMatch(typedChar, targetChar);
         const isSpace = targetChar === " ";
@@ -374,16 +561,12 @@ function App() {
     const previousLines = processedLines
       .slice(0, currentLineIndex)
       .map((line, lineIndex) => {
-        let startPos = 0;
-        for (let i = 0; i < lineIndex; i++) {
-          startPos += processedLines[i].length + 1;
-        }
-        return validateLine(line, startPos);
+        const lineInput = userInputLines[lineIndex] || "";
+        return validateLine(line, lineInput);
       });
 
     return {
       lines: processedLines,
-      currentLineIndex,
       typedArray,
       current,
       remaining,
@@ -398,14 +581,8 @@ function App() {
     }));
   };
 
-  const {
-    typedArray,
-    current,
-    remaining,
-    lines,
-    currentLineIndex,
-    previousLines,
-  } = getWordParts();
+  const { typedArray, current, remaining, lines, previousLines } =
+    getWordParts();
 
   // Add ref for input field
   const inputRef = useRef<HTMLInputElement>(null);
@@ -451,20 +628,47 @@ function App() {
   const handleResetAllStats = () => {
     if (window.confirm(t("resetStatsConfirm"))) {
       // Reset both general stats and letter stats
+      const lines = text.split("\n");
       setStats({
         correctChars: 0,
         closeMatches: 0,
         mistakes: 0,
       });
       setLetterStats({});
-      setUserInput("");
+      setUserInputLines(lines.map(() => ""));
+      setCurrentLineIndex(0);
+    }
+  };
+
+  // Handle clicking on a line to switch to it
+  const handleLineClick = (lineIndex: number) => {
+    const lines = text.split("\n");
+    if (lineIndex >= 0 && lineIndex < lines.length) {
+      // Ensure we have an array entry for the clicked line
+      const newInputLines = [...userInputLines];
+      while (newInputLines.length <= lineIndex) {
+        newInputLines.push("");
+      }
+      setUserInputLines(newInputLines);
+      setCurrentLineIndex(lineIndex);
+      // Focus input after switching
+      setTimeout(() => {
+        if (inputRef.current) {
+          inputRef.current.focus();
+          const lineInput = newInputLines[lineIndex] || "";
+          inputRef.current.setSelectionRange(
+            lineInput.length,
+            lineInput.length
+          );
+        }
+      }, 0);
     }
   };
 
   // Update when keyboard layout changes
   useEffect(() => {
     keyMapper.initializeMapping(settings.keyboardLayout);
-  }, [settings.keyboardLayout]);
+  }, [settings.keyboardLayout, keyMapper]);
 
   const renderTabContent = () => {
     switch (activeTab) {
@@ -481,6 +685,8 @@ function App() {
                   className={
                     lineIndex === currentLineIndex ? "current-line" : ""
                   }
+                  onClick={() => handleLineClick(lineIndex)}
+                  style={{ cursor: "pointer" }}
                 >
                   {lineIndex === currentLineIndex ? (
                     <>
@@ -535,8 +741,9 @@ function App() {
               <input
                 ref={inputRef}
                 type="text"
-                value={userInput}
+                value={userInputLines[currentLineIndex] || ""}
                 onChange={handleInput}
+                onKeyDown={handleKeyDown}
                 dir="rtl"
                 placeholder={t("typingPlaceholder")}
               />
