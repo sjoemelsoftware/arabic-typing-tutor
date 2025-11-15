@@ -23,6 +23,7 @@ export const translations: Translations = {
         "لوحة المفاتيح الافتراضية غير متوفرة على الأجهزة المحمولة",
       useQwertyMapping:
         "قم بتعيين إدخال لوحة مفاتيح QWERTY إلى اللغة العربية، في حال لم يكن تخطيط لوحة المفاتيح باللغة العربية.",
+      autoAdvance: "الانتقال التلقائي للسطر التالي",
       qwertyMappingEnabledNote:
         "تم اكتشاف لوحة مفاتيح عربية - تم تعطيل تحويل QWERTY",
       qwertyMappingDisabledNote:
@@ -73,6 +74,7 @@ export const translations: Translations = {
       keyboardMobileNote: "Virtual keyboard is not available on mobile devices",
       useQwertyMapping:
         "Map QWERTY keyboard input to Arabic, in case the keyboard layout is not Arabic.",
+      autoAdvance: "Auto-advance to next line",
       qwertyMappingEnabledNote:
         "Detected English keyboard input - QWERTY to Arabic mapping enabled",
       qwertyMappingDisabledNote:

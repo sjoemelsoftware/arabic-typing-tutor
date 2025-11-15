@@ -16,6 +16,7 @@ interface Settings {
   language: Language;
   keyboardLayout: string;
   useQwertyMapping: boolean;
+  autoAdvance: boolean;
 }
 
 type Language = "en" | "ar";
@@ -36,6 +37,7 @@ function App() {
           language: "en",
           keyboardLayout: "osx-arabic",
           useQwertyMapping: false,
+          autoAdvance: true,
         };
   });
 
@@ -377,12 +379,12 @@ function App() {
         const updatedInput = currentLineInput + mappedChar;
         newInputLines[currentLineIndex] = updatedInput;
 
-        // Auto-advance to next line when last character is typed
+        // Auto-advance to next line when last character is typed (if enabled)
         const isLastCharacter =
           updatedInput.length === currentTargetLine.length;
         const hasNextLine = currentLineIndex < lines.length - 1;
 
-        if (isLastCharacter && hasNextLine) {
+        if (isLastCharacter && hasNextLine && settings.autoAdvance) {
           while (newInputLines.length <= currentLineIndex + 1) {
             newInputLines.push("");
           }
@@ -446,13 +448,13 @@ function App() {
     }
     newInputLines[currentLineIndex] = newInput;
 
-    // Auto-advance to next line when last character is typed
+    // Auto-advance to next line when last character is typed (if enabled)
     // Check if we just typed the last character of the current line
     const isLastCharacter =
       newLength > oldLength && newInput.length === currentTargetLine.length;
     const hasNextLine = currentLineIndex < lines.length - 1;
 
-    if (isLastCharacter && hasNextLine) {
+    if (isLastCharacter && hasNextLine && settings.autoAdvance) {
       // Ensure we have an array entry for the next line
       while (newInputLines.length <= currentLineIndex + 1) {
         newInputLines.push("");
@@ -846,6 +848,14 @@ function App() {
                   onChange={() => toggleSetting("useQwertyMapping")}
                 />
                 <span>{t("settings.useQwertyMapping")}</span>
+              </label>
+              <label>
+                <input
+                  type="checkbox"
+                  checked={settings.autoAdvance}
+                  onChange={() => toggleSetting("autoAdvance")}
+                />
+                <span>{t("settings.autoAdvance")}</span>
               </label>
             </div>
             <GitHubInfo language={settings.language} />
